@@ -10,14 +10,14 @@ extension JsSplit on String {
 
     for (final match in matches) {
       if (match.start > pos) {
-        yield this.substring(pos, match.start);
+        yield substring(pos, match.start);
       }
-      yield match.group(0);
+      yield match.group(0)!;
       pos = match.end;
     }
 
-    if (pos < this.length - 1) {
-      yield this.substring(pos);
+    if (pos < length - 1) {
+      yield substring(pos);
     }
   }
 }

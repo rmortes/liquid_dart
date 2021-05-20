@@ -14,7 +14,7 @@ class TagParser {
 
   Token get current => tokens.current;
 
-  moveNext() => tokens.moveNext();
+  bool moveNext() => tokens.moveNext();
 
   Expression parseBooleanExpression() {
     var exp = _parseAnd();
@@ -83,6 +83,8 @@ class TagParser {
         case '>=':
           op = (a, b) => a >= b;
           break;
+        default:
+          throw 'OP not expected';
       }
       moveNext();
       exp = BinaryOperation(op, exp, parseFilterExpression());
@@ -133,7 +135,7 @@ class TagParser {
     return exp;
   }
 
-  void expect({List<TokenType> types, String value}) {
+  void expect({List<TokenType>? types, String? value}) {
     if (types != null && !types.contains(tokens.current.type)) {
       throw ParseException.unexpected(tokens.current,
           expected: 'one of $types');
@@ -165,8 +167,9 @@ class TagParser {
   }
 
   DocumentFuture parseDocumentReference(ParseContext context) {
-    final root = current.source.root;
+    final root = current.source?.root;
+    assert(root != null, 'Unable to parse: Root is null');
     final path = parseSingleTokenExpression();
-    return DocumentFuture(root, context, path);
+    return DocumentFuture(root!, context, path);
   }
 }
